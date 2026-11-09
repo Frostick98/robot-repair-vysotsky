@@ -6,12 +6,16 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rigidbody2d;
     Animator animator;
 
+    private NonPlayerCharacter lastNonPlayerCharacter;
+
+    public float speed = 3.0f;
     public InputAction MoveAction;
     public int maxHealth = 5;
     public int health { get { return currentHealth; } }
     public GameObject projectilePrefab;
     public float timeInvincible = 2.0f;
     public InputAction LaunchAction;
+    public InputAction TalkAction;
 
     int currentHealth = 1;
     bool isInvincible;
@@ -19,7 +23,6 @@ public class PlayerController : MonoBehaviour
 
     Vector2 move;
     Vector2 moveDirection = new Vector2(1, 0);
-    public float speed = 3.0f;
 
     void Start()
     {
@@ -28,6 +31,7 @@ public class PlayerController : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         currentHealth = maxHealth;
+        TalkAction.Enable();
         //currentHealth = 1;
     }
 
@@ -58,6 +62,25 @@ public class PlayerController : MonoBehaviour
         {
             Launch();
         }
+        RaycastHit2D hit = Physics2D.Raycast(
+            rigidbody2d.position + Vector2.up * 0.2f,
+            moveDirection, 1.5f, LayerMask.GetMask("NPC"));
+        if (hit.collider != null)
+        {
+            NonPlayerCharacter npc =
+                hit.collider.GetComponent<NonPlayerCharacter>();
+            npc.dialogueBubble.SetActive(true);
+            lastNonPlayerCharacter = npc;
+            FindFriend();
+        }
+        else
+        {
+            if (lastNonPlayerCharacter != null)
+            {
+                lastNonPlayerCharacter.dialogueBubble.SetActive(false);
+                lastNonPlayerCharacter = null;
+            }
+        }
     }
 
     void FixedUpdate()
@@ -81,7 +104,7 @@ public class PlayerController : MonoBehaviour
         }
         currentHealth = Mathf.Clamp(currentHealth + amount,
         0, maxHealth);
-        Debug.Log(currentHealth + "/" + maxHealth);
+        UIHandler.instance.SetHealthValue(currentHealth / (float)maxHealth);
     }
     void Launch()
     {
@@ -92,5 +115,12 @@ public class PlayerController : MonoBehaviour
         projectileObject.GetComponent<Projectile>();
         projectile.Launch(moveDirection, 300);
         animator.SetTrigger("Launch");
+    }
+    void FindFriend()
+    {
+        if (TalkAction.WasPressedThisFrame())
+        {
+            UIHandler.instance.DisplayDialogue();
+        }
     }
 }

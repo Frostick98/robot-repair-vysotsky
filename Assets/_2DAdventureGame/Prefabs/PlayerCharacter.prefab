@@ -219,6 +219,24 @@ MonoBehaviour:
       m_Flags: 0
     m_Flags: 0
     m_Priority: 0
+  TalkAction:
+    m_Name: Talk
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 36f8ebc2-fe7d-46a5-846f-5bd0af025487
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: fd37c22f-7e25-42ee-966e-002caeb7d3fb
+      m_Path: <Keyboard>/x
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Talk
+      m_Flags: 0
+    m_Flags: 0
+    m_Priority: 0
   speed: 4
 --- !u!50 &4082049255450813689
 Rigidbody2D:

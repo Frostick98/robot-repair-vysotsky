@@ -5,6 +5,7 @@ public class EnemyController : MonoBehaviour
     public float speed;
     public bool vertical;
     public float changeTime = 3.0f;
+    public bool isBroken { get { return broken; } }
 
     float timer;
     int direction = 1;
